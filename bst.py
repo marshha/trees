@@ -73,8 +73,9 @@ class BST(object):
     def iter(self):
         yield from self._iter(self.root)
 
-    def find(self, val):
+    def _find_node(self, val):
         found_node = None
+
         parent = self.root
         while parent:
             if val == parent.val:
@@ -90,8 +91,8 @@ class BST(object):
                     parent = parent.left
                 else:
                     break
-        
-        if found_node:
-            return True
 
-        return False
+        return found_node
+
+    def find(self, val):
+        return self._find_node(val) != None
