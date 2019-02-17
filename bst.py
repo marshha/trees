@@ -63,6 +63,11 @@ class BST(object):
                     node.parent.left = None
                 elif node == node.parent.right:
                     node.parent.right = None
+            else:
+                # if it's the root node, and it had no child nodes,
+                # it was the only node.
+                if self.root == node:
+                    self.root = None
 
         # if node has one child
         elif (node.left and not node.right) or (node.right and not node.left):
@@ -73,12 +78,18 @@ class BST(object):
                     node.parent.left = single_child
                 elif node == node.parent.right:
                     node.parent.right = single_child
+            else:
+                # if it's the root node, and it has only one child node
+                # then the child becomes the root
+                if self.root == node:
+                    self.root = single_child
 
         # promote next in order
         else:
             next_node = self._next(node)
 
-            # copy the node contents
+            # copy the node contents - no special check for root node
+            # as the node does not move
             node.val = next_node.val
             node.count = next_node.count
 

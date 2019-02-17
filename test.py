@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import random
+import sys
 import bst
 
 NUM_ITERS=1000
@@ -34,6 +35,8 @@ prev_results = {
 }
 
 for i in range(0, NUM_ITERS):
+    sys.stdout.write(str(i))
+
     bst_obj = bst.BST()
     orig_list = []
     for x in range(0,NUM_ENTRIES):
@@ -48,10 +51,16 @@ for i in range(0, NUM_ITERS):
 
     # delete half the inserted values - don't delete the root
     # which is a special case
-    for x in range(int(NUM_ENTRIES/2), NUM_ENTRIES):
-        bst_obj.delete(orig_list[x])
+    if random.random() > 0.5:
+        for x in range(int(NUM_ENTRIES/2), NUM_ENTRIES):
+            bst_obj.delete(orig_list[x])
 
-    orig_list = orig_list[:int(NUM_ENTRIES/2)]
+        orig_list = orig_list[:int(NUM_ENTRIES/2)]
+    else:
+        for x in range(0, int(NUM_ENTRIES/2)):
+            bst_obj.delete(orig_list[x])
+
+        orig_list = orig_list[int(NUM_ENTRIES/2):]
 
     for x in orig_list:
         if not bst_obj.find(x):
@@ -88,9 +97,24 @@ for i in range(0, NUM_ITERS):
     next_results[next_res] += 1
     prev_results[prev_res] += 1
 
+    sys.stdout.write("\r")
+
 print("List", list_results)
 print("Iter", iter_results)
 print("Find", find_results)
 print("Next", next_results)
 print("Prev", prev_results)
 print(bst.BST().get_list() == [])
+
+# specific tests
+bst_obj = bst.BST()
+for x in [1,2,3,4,5]:
+    bst_obj.insert(x)
+bst_obj.delete(1)
+print (bst_obj.get_list() == [2,3,4,5])
+
+bst_obj = bst.BST()
+for x in [1]:
+    bst_obj.insert(x)
+bst_obj.delete(1)
+print (bst_obj.get_list() == [])
