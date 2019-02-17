@@ -25,18 +25,22 @@ find_results = {
 
 for i in range(0, NUM_ITERS):
     bst_obj = bst.BST()
+    orig_list = []
     for x in range(0,NUM_ENTRIES):
-        bst_obj.insert(random.randint(MIN_VAL,MAX_VAL))
+        orig_list.append(random.randint(MIN_VAL,MAX_VAL))
+
+    for x in orig_list:
+        bst_obj.insert(x)
 
     final_list = bst_obj.get_list()
 
     iter_list = [ val for val in bst_obj.iter() ]
 
-    list_res = (final_list == sorted(final_list))
-    iter_res = (iter_list==final_list)
+    list_res = (final_list == sorted(orig_list))
+    iter_res = (iter_list == sorted(orig_list))
 
-    rand_idx = random.randint(0,len(final_list))
-    find_res = bst_obj.find(final_list[rand_idx])
+    rand_idx = random.randint(0,len(orig_list))
+    find_res = bst_obj.find(orig_list[rand_idx])
 
     list_results[list_res] += 1
     iter_results[iter_res] += 1
