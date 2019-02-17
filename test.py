@@ -2,7 +2,7 @@
 import random
 import bst
 
-NUM_ITERS=100
+NUM_ITERS=1000
 NUM_ENTRIES=1024
 
 MIN_VAL=0
