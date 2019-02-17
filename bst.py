@@ -41,26 +41,37 @@ class BST(object):
     def delete(self, val):
         return
 
-    def _iter(self, node, out_list):
-        if node.left:
-            self._iter(node.left, out_list)
+    def _list(self, node):
+        my_list = []
 
-        for x in range(0, node.count):
-            out_list.append(node.val)
+        if node:
+            for x in range(0, node.count):
+                my_list.append(node.val)
 
-        if node.right:
-            self._iter(node.right, out_list)
+            if node.left:
+                my_list = self._list(node.left) + my_list
 
-        return
+            if node.right:
+                my_list = my_list + self._list(node.right)
+
+        return my_list
 
     def get_list(self):
-        out_list = []
-        if not self.root:
-            return out_list
+        return self._list(self.root)
 
-        self._iter(self.root, out_list)
+    def _iter(self, node):
+        if node:
+            if node.left:
+                yield from self._iter(node.left)
 
-        return out_list
+            for x in range(0, node.count):
+                yield node.val
+
+            if node.right:
+                yield from self._iter(node.right)
+
+    def iter(self):
+        yield from self._iter(self.root)
 
     def find(self, val):
         found_node = None
