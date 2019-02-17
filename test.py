@@ -3,7 +3,7 @@ import random
 import bst
 
 NUM_ITERS=1000
-NUM_ENTRIES=1024
+NUM_ENTRIES=2048
 
 MIN_VAL=0
 MAX_VAL=1024*1024
@@ -39,10 +39,25 @@ for i in range(0, NUM_ITERS):
     for x in range(0,NUM_ENTRIES):
         orig_list.append(random.randint(MIN_VAL,MAX_VAL))
 
-    orig_sorted_nodups = sorted(list(set(orig_list)))
-
     for x in orig_list:
         bst_obj.insert(x)
+
+    for x in orig_list:
+        if not bst_obj.find(x):
+            print("Failed to find ", x)
+
+    # delete half the inserted values - don't delete the root
+    # which is a special case
+    for x in range(int(NUM_ENTRIES/2), NUM_ENTRIES):
+        bst_obj.delete(orig_list[x])
+
+    orig_list = orig_list[:int(NUM_ENTRIES/2)]
+
+    for x in orig_list:
+        if not bst_obj.find(x):
+            print("Failed to find after delete", x)
+
+    orig_sorted_nodups = sorted(list(set(orig_list)))
 
     final_list = bst_obj.get_list()
 

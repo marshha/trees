@@ -42,7 +42,49 @@ class BST(object):
         return
 
     def delete(self, val):
+        node = self._find_node(val)
+        if not node:
+            raise Exception("doesn't exist!")
+
+        if node.count > 1:
+            node.count -= 1
+            return
+
+        self._delete(node)
         return
+
+    def _delete(self, node):
+        # handle the node removal cases
+        # if node is a leaf
+        if not node.left and not node.right:
+            # detach from parent
+            if node.parent:
+                if node == node.parent.left:
+                    node.parent.left = None
+                elif node == node.parent.right:
+                    node.parent.right = None
+
+        # if node has one child
+        elif (node.left and not node.right) or (node.right and not node.left):
+            single_child = node.left if node.left else node.right
+            single_child.parent = node.parent
+            if node.parent:
+                if node == node.parent.left:
+                    node.parent.left = single_child
+                elif node == node.parent.right:
+                    node.parent.right = single_child
+
+        # promote next in order
+        else:
+            next_node = self._next(node)
+
+            # copy the node contents
+            node.val = next_node.val
+            node.count = next_node.count
+
+            # delete recursively - this node should not have 2 children
+            # as it otherwise cannot be the next in-order successor.
+            self._delete(next_node)
 
     def _list(self, node):
         my_list = []
