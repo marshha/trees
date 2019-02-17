@@ -6,6 +6,7 @@ class BSTNode(object):
         self.count = 1
         self.left = None
         self.right = None
+        self.parent = None
         return
 
 class BST(object):
@@ -28,12 +29,14 @@ class BST(object):
                     parent = parent.right
                 else:
                     parent.right = new_node
+                    new_node.parent = parent
                     break
             else:
                 if parent.left:
                     parent = parent.left
                 else:
                     parent.left = new_node
+                    new_node.parent = parent
                     break
 
         return
@@ -59,6 +62,16 @@ class BST(object):
     def get_list(self):
         return self._list(self.root)
 
+    def _iter_node(self, node):
+        if node:
+            if node.left:
+                yield from self._iter_node(node.left)
+
+            yield node
+
+            if node.right:
+                yield from self._iter_node(node.right)
+
     def _iter(self, node):
         if node:
             if node.left:
@@ -72,6 +85,68 @@ class BST(object):
 
     def iter(self):
         yield from self._iter(self.root)
+
+    def _next(self, node):
+        if node.right:
+            return next(self._iter_node(node.right))
+
+        while node:
+            if node.parent == None:
+                return None
+
+            if node == node.parent.left:
+                return node.parent
+
+            node = node.parent
+
+        return node
+
+    def next(self, val):
+        curr_node = self._find_node(val)
+        if not curr_node:
+            return None
+
+        next_node = self._next(curr_node)
+        if next_node:
+            return next_node.val
+
+        return None
+
+    def _prev(self, node):
+        if node.left:
+            # walk to the right-most node from the left branch
+            node = node.left
+            while node:
+                if node.right:
+                    node = node.right
+                else:
+                    return node
+
+        while node:
+            if node.parent == None:
+                return None
+
+            # Take all the left branches back up the tree
+            # until it reaches a value on the right branch
+            # of the parent node - this is the first value
+            # the input node was greater than.
+            if node.parent.right == node:
+                return node.parent
+
+            node = node.parent
+
+        return None
+
+    def prev(self, val):
+        curr_node = self._find_node(val)
+        if not curr_node:
+            return None
+
+        prev_node = self._prev(curr_node)
+        if prev_node:
+            return prev_node.val
+
+        return None
 
     def _find_node(self, val):
         found_node = None
