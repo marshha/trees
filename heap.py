@@ -13,8 +13,16 @@ def heap_rchild_idx(parent_idx):
     return int(2*parent_idx)+2
 
 class MinHeap(object):
-    def __init__(self):
-        self._heap = []
+    def __init__(self, in_list=[]):
+        self._heap = list(in_list)
+
+        # heapify the input list
+        last_idx = len(self._heap) - 1
+        last_parent_idx = heap_parent_idx(last_idx)
+
+        if last_parent_idx is not None:
+            for x in range(0, last_parent_idx+1):
+                self._heapify(last_parent_idx - x)
 
     def getMin(self):
         if self._heap:
@@ -74,6 +82,20 @@ class MinHeap(object):
 
         return rchild_idx
 
+    def _heapify(self, parent_idx):
+        '''
+        Return true if a swap was performed.
+        '''
+        child_idx = self._min_child(parent_idx)
+        if child_idx is not None:
+            if self._heap[child_idx] < self._heap[parent_idx]:
+                self._swap(child_idx, parent_idx)
+
+                # as a swap occurred, check that the parent value
+                # being swapped is valid at the new location,
+                # or continue to heapify
+                self._heapify(child_idx)
+
     def delete(self, val):
         curr_idx = self._find_idx(val)
         if curr_idx is None:
@@ -104,12 +126,4 @@ class MinHeap(object):
                 parent_idx = heap_parent_idx(curr_idx)
         else:
             # parent is less than child or parent doesn't exist, sift down
-            child_idx = self._min_child(curr_idx)
-            while child_idx is not None:
-                if self._heap[child_idx] < self._heap[curr_idx]:
-                    self._swap(child_idx, curr_idx)
-                else:
-                    break
-
-                curr_idx = child_idx
-                child_idx = self._min_child(curr_idx)
+            self._heapify(curr_idx)

@@ -21,3 +21,11 @@ while min_val is not None:
     min_val = minheap.extractMin()
 
 print(heap_list == sorted(vals))
+
+minheap = heap.MinHeap(vals)
+heap_list = []
+min_val = minheap.extractMin()
+while min_val is not None:
+    heap_list.append(min_val)
+    min_val = minheap.extractMin()
+print(heap_list == sorted(vals))
